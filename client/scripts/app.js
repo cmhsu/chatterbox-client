@@ -122,19 +122,12 @@ app.removeFriend = function(friendName) {
   if (index >= 0) {
     var removed = friends.splice(index, 1);
   }
-  //$('.chatContainer').each(function() {
-  //  if (friends.indexOf($(this).find('.username').text()) !== -1) {
-  //    $(this).css("font-weight", "bold");
-  //  }
-  //});
-  console.log(removed);
   $('.chatContainer').each(function() {
     if (removed[0] === $(this).find('.username').text()) {
       console.log($(this));
       $(this).css("font-weight", "normal");
     }
   });
-
 };
 
 app.handleSubmit = function() {

@@ -7,13 +7,15 @@ var ownRoom = prompt('What room?');
 
 var app = {};
 
+app.server = 'https://api.parse.com/1/classes/chatterbox';
+
 app.init = function() {};
 
 app.send = function(message) {
 
   $.ajax({
     // This is the url you should use to communicate with the parse API server.
-    url: 'https://api.parse.com/1/classes/chatterbox',
+    url: app.server,
     type: 'POST',
     data: JSON.stringify(message),
     contentType: 'application/json',
@@ -32,7 +34,7 @@ app.fetch = function() {
 
     $.ajax({
     // This is the url you should use to communicate with the parse API server.
-    url: 'https://api.parse.com/1/classes/chatterbox',
+    url: app.server,
     type: 'GET',
     // data: JSON.stringify(message),
     // contentType: 'application/json',
@@ -153,7 +155,7 @@ $(document).ready(function() {
       app.addFriend(friendName);
     }
   });
-  $('.submit').on('click', function(event) {
+  $('.submit').on('submit', function(event) {
     event.preventDefault();
     app.handleSubmit();
   });

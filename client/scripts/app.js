@@ -1,6 +1,10 @@
 // YOUR CODE HERE:
 var rooms = [];
 
+var friends = [''];
+
+var ownRoom = prompt('What room?');
+
 var app = {};
 
 app.init = function() {};
@@ -40,9 +44,11 @@ app.fetch = function() {
       for (var i = 0; i < data.results.length; i++) {
         app.addMessage(data.results[i]);
       }
+      $('select').append('<option>All Rooms</rooms>');
       for (var i = 0; i < rooms.length; i++) {
         $('select').append('<option>' + rooms[i] + '</option>')
       }
+      app.addFriend('');
     },
     error: function (data) {
       // See: https://developer.mozilla.org/en-US/docs/Web/API/console.error
@@ -70,6 +76,7 @@ app.fetchRoom = function(roomValue) {
           app.addMessage(data.results[i]);
         }
       }
+      app.addFriend('');
     },
     error: function (data) {
       // See: https://developer.mozilla.org/en-US/docs/Web/API/console.error
@@ -88,7 +95,7 @@ app.addMessage = function(message) {
   var text = escapeHTML(message.text + '');
   var roomName = escapeHTML(message.roomname);
 
-  $('#chats').append('<div>' +
+  $('#chats').append('<div class="chatContainer">' +
     '<a class="username" href="#">' + username + '</a>' + ': ' +
     text + ' in ' +roomName + '</div>');
   if (rooms.indexOf(roomName) === -1) {
@@ -100,7 +107,15 @@ app.addRoom = function(roomName) {
   $('#roomSelect').append('<div>' + roomName + '</div>')
 };
 
-app.addFriend = function() {
+app.addFriend = function(friendName) {
+  if (friends.indexOf(friendName) === -1) {
+    friends.push(friendName);
+  }
+  $('.chatContainer').each(function(node) {
+    if (friends.indexOf($(this).find('.username').text()) !== -1) {
+      $(this).css("font-weight", "bold");
+    }
+  });
 };
 
 app.handleSubmit = function() {
@@ -109,7 +124,7 @@ app.handleSubmit = function() {
   var username = window.location.search.slice(index + 1);
   message.username = username;
   message.text = $('#message').val();
-  message.roomname = 'cool roomname';
+  message.roomname = ownRoom;
 
   app.send(message);
 };
@@ -117,7 +132,8 @@ app.handleSubmit = function() {
 $(document).ready(function() {
   $('#chats').on('click', '.username', function(event) {
     event.preventDefault();
-    app.addFriend();
+    var friendName = $(this).text();
+    app.addFriend(friendName);
   });
   $('.submit').on('click', function(event) {
     event.preventDefault();
@@ -128,7 +144,12 @@ $(document).ready(function() {
     app.fetch();
   });
   $('select').on('change', function(event) {
+    if (this.value === 'All Rooms') {
+      app.fetch();
+    } else {
       app.fetchRoom(this.value);
+      ownRoom = this.value;
+    }  
   });
 });
 

@@ -83,7 +83,6 @@ app.fetchRoom = function(roomValue) {
       console.error('chatterbox: Failed to fetch message');
     }
   });
-
 };
 
 app.clearMessages = function() {
@@ -118,6 +117,26 @@ app.addFriend = function(friendName) {
   });
 };
 
+app.removeFriend = function(friendName) {
+  var index = friends.indexOf(friendName);
+  if (index >= 0) {
+    var removed = friends.splice(index, 1);
+  }
+  //$('.chatContainer').each(function() {
+  //  if (friends.indexOf($(this).find('.username').text()) !== -1) {
+  //    $(this).css("font-weight", "bold");
+  //  }
+  //});
+  console.log(removed);
+  $('.chatContainer').each(function() {
+    if (removed[0] === $(this).find('.username').text()) {
+      console.log($(this));
+      $(this).css("font-weight", "normal");
+    }
+  });
+
+};
+
 app.handleSubmit = function() {
   var message = {};
   var index = window.location.search.indexOf('=');
@@ -133,7 +152,13 @@ $(document).ready(function() {
   $('#chats').on('click', '.username', function(event) {
     event.preventDefault();
     var friendName = $(this).text();
-    app.addFriend(friendName);
+    if ($(this).css("font-weight") === "bold") {
+      //$(this).parent().css("font-weight", "normal");
+      app.removeFriend(friendName);
+    }
+    else {
+      app.addFriend(friendName);
+    }
   });
   $('.submit').on('click', function(event) {
     event.preventDefault();
